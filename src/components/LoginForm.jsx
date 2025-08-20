@@ -1,5 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Link } from 'react-router-dom';
 
 function LoginForm (){
     return(
@@ -10,8 +11,13 @@ function LoginForm (){
           <img
             src="https://ik.imagekit.io/tvlk/blog/2024/01/landmark-81-3-841x1024.jpg?tr=q-70,c-at_max,w-500,h-300,dpr-2"
             alt="building"
-            className="img-fluid h-70 w-90 ms-5"
-            style={{ objectFit: "cover", height: "78vh" }}
+            className="img-fluid"
+            style={{
+              objectFit: "cover",
+              width: "100%",
+              height: "100vh",
+              display: "block",
+            }}
           />
         </div>
        
@@ -81,11 +87,15 @@ function LoginForm (){
                 <i className="bi bi-facebook me-2"></i>Facebook
               </button>
             </div>
+            <div className="text-center" style={{ fontSize: 14 }}>
+              Bạn chưa có tài khoản? <Link to="/register">Đăng ký</Link>
+            </div>
+            </div>
             
           </div>
         </div>
       </div>
-    </div>
+   
     )
 }
 

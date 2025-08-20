@@ -1,6 +1,8 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import {Link} from 'react-router-dom';
+
 
 function RegisterForm() {
   return (
@@ -84,8 +86,8 @@ function RegisterForm() {
                 />
                 <label className="form-check-label" htmlFor="terms">
                   Tôi đồng ý với{" "}
-                  <a href="#">Điều khoản dịch vụ</a> và{" "}
-                  <a href="#">Chính sách bảo mật</a>.
+                  <Link to="#">Điều khoản dịch vụ</Link> và{" "}
+                  <Link to="#">Chính sách bảo mật</Link>.
                 </label>
               </div>
               <button
@@ -107,8 +109,12 @@ function RegisterForm() {
                 <i className="bi bi-facebook me-2"></i>Facebook
               </button>
             </div>
+            
             <div className="text-center" style={{ fontSize: 14 }}>
-              Bạn đã có tài khoản? <a href="#">Đăng nhập</a>
+              Bạn đã có tài khoản? <Link to="/login">Đăng nhập</Link>
+
+            
+              
             </div>
           </div>
         </div>

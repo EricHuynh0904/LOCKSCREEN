@@ -1,16 +1,15 @@
-import axiosClient from "./http";
+import instance from "./http";
 
-// Đăng ký
+
 export const register = (data) => {
-  return axiosClient.post("/auth/register", data);
+  return instance.post("/user/register", data);
 };
 
-// Đăng nhập
 export const login = (data) => {
-  return axiosClient.post("/auth/login", data);
+  return instance.post("/user/login", data);
 };
 
-// Đăng xuất
+
 export const logout = () => {
-  return axiosClient.post("/auth/logout");
+  return instance.post("/user/logout");
 };
