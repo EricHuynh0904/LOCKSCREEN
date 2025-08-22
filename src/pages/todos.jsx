@@ -1,16 +1,33 @@
-import axiosClient from "./http";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-// Đăng ký
-export const register = (data) => {
-  return axiosClient.post("/auth/register", data);
-};
+function TodosPage() {
+  const navigate = useNavigate();
 
-// Đăng nhập
-export const login = (data) => {
-  return axiosClient.post("/auth/login", data);
-};
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
-// Đăng xuất
-export const logout = () => {
-  return axiosClient.post("/auth/logout");
-};
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  return (
+    <div>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h2>Todos</h2>
+        <button className="btn btn-outline-danger" onClick={handleLogout}>
+          Đăng xuất
+        </button>
+      </div>
+     
+    </div>
+  );
+}
+
+export default TodosPage;

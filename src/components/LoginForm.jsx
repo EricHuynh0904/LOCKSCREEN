@@ -1,8 +1,101 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../services/auth"; 
+import { useEffect } from "react";
 
 function LoginForm (){
+      const [formData, setFormData]  = useState({
+              
+              email: "",
+              password: "",
+             
+          })
+      
+          const [error, setError] = useState({
+              
+              email: "",
+              password: "",
+              
+          });
+      
+          const navigate = useNavigate();
+          const [loading, setLoading] = useState(false);
+          const [generalError, setGeneralError] = useState("");
+            const [serverError, setServerError] = useState("");
+          const handleChange = (e) => {
+             
+              setFormData({
+                  ...formData,
+                  [e.target.id]: e.target.value
+              });
+               setError((prev) => ({ ...prev, [e.target.id]: "" }));
+              setGeneralError("");
+          }
+      
+          
+
+  const handleSubmit = async (e) => {
+   e.preventDefault();
+    setLoading(true);
+    setError({});
+    setServerError("");
+    setGeneralError("");
+        const newError = {};
+  if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    newError.email = "Email không hợp lệ";
+  } else if (formData.email.length == 0) {
+    newError.email = "Email không được để trống";
+    
+  }
+  if (formData.password.length == 0) {
+    newError.password = "Mật khẩu không được để trống";
+    
+  }
+  setLoading(true);
+  setError(newError);
+  if (Object.keys(newError).length > 0) {
+    setLoading(false);
+    return;
+  }
+  try {
+    const res = await login({
+  email: formData.email,
+  password: formData.password,
+});
+
+
+const token = res?.id;
+
+if (token) {
+  localStorage.setItem("token", String(token));
+  navigate("/todos");
+} else {
+  setGeneralError("Đăng nhập thất bại. Không nhận được token/id.");
+}
+
+  } catch (err) {
+    if (err?.response?.status === 401) {
+      setError("Email hoặc mật khẩu không đúng.");
+    } else {
+      setError("Đăng nhập thất bại. Hãy thử lại.");
+    }
+  } finally {
+    setLoading(false);
+  }
+
+
+  };
+
+
+   useEffect (() => {
+          console.log(formData);
+      }, [formData]);
+
+
+
     return(
         <div className="container-fluid min-vh-100 bg-light">
       <div className="row justify-content-center align-items-center min-vh-100">
@@ -48,26 +141,37 @@ function LoginForm (){
             <p className="mb-4 text-muted text-center" style={{ fontSize: 15 }}>
               Hãy đăng nhập tài khoản của bạn để bắt đầu.
             </p>
-            <form>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  className="form-control"
-                  placeholder="Nhập email của bạn"
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Mật khẩu</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  placeholder="Mật khẩu của bạn"
-                  required
-                />
-              </div>
-              
-              
+          
+            <form onSubmit={handleSubmit}>
+  
+  <div className="mb-3">
+    <label className="form-label">Email</label>
+    <input
+      className="form-control"
+      name="email"
+      id="email"
+      placeholder="Nhập email của bạn"
+      value={formData.email}
+      onChange={handleChange}
+      
+    />
+  </div>
+  {error.email && (<div className="text-danger mb-3">{error.email}</div>)}
+  <div className="mb-3">
+    <label className="form-label">Mật khẩu</label>
+    <input
+      type="password"
+      className="form-control"
+      name="password"
+      id="password"
+      placeholder="Mật khẩu của bạn"
+      value={formData.password}
+      onChange={handleChange}
+      
+    />
+  </div>
+  {error.password && (<div className="text-danger mb-3">{error.password}</div>)}
+
               <button
                 type="submit"
                 className="btn btn-primary w-100 mb-3"

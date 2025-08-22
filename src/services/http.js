@@ -2,18 +2,23 @@ import axios from 'axios';
 
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
-
-  headers: {"Content-Type": "application/json"}
+  baseURL: process.env.REACT_APP_API_URL, 
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 
 instance.interceptors.request.use(function (config) {
     // Do something before request is sent
         const token = localStorage.getItem("token");
-     if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
+if (token) {
+  config.headers.Authorization = `Bearer ${token}`;
+} else {
+  delete config.headers.Authorization; // bỏ hẳn header nếu chưa có token
+}
+
+
   return config;
   }, function (error) {
     // Do something with request error
