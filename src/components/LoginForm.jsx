@@ -67,11 +67,11 @@ function LoginForm (){
 });
 
 
-const token = res?.id;
+const token = res?.access_token;
 
 if (token) {
   localStorage.setItem("token", String(token));
-  navigate("/todos");
+    window.location.href = "http://localhost:5174?token=" + token;
 } else {
   setGeneralError("Đăng nhập thất bại. Không nhận được token/id.");
 }
@@ -136,16 +136,14 @@ if (token) {
               </div>
             </div>
             <h5 className="mb-2 fw-bold text-center">
-              Chào mừng đến với Nền Tảng Bất Động Sản!
+              Đăng Nhập
             </h5>
-            <p className="mb-4 text-muted text-center" style={{ fontSize: 15 }}>
-              Hãy đăng nhập tài khoản của bạn để bắt đầu.
-            </p>
+           
           
             <form onSubmit={handleSubmit}>
   
   <div className="mb-3">
-    <label className="form-label">Email</label>
+    <label className="form-label"><strong>Email</strong></label>
     <input
       className="form-control"
       name="email"
@@ -158,7 +156,7 @@ if (token) {
   </div>
   {error.email && (<div className="text-danger mb-3">{error.email}</div>)}
   <div className="mb-3">
-    <label className="form-label">Mật khẩu</label>
+    <label className="form-label"><strong>Mật khẩu</strong></label>
     <input
       type="password"
       className="form-control"
@@ -174,25 +172,15 @@ if (token) {
 
               <button
                 type="submit"
-                className="btn btn-primary w-100 mb-3"
+                className="btn btn-dark w-100 mb-3"
                 style={{ fontWeight: 600 }}
               >
                 Đăng nhập
               </button>
             </form>
-            <div className="text-center mb-3 text-muted" style={{ fontSize: 14 }}>
-              Hoặc đăng nhập bằng
-            </div>
-            <div className="d-flex gap-2 mb-3">
-              <button className="btn btn-outline-secondary w-50">
-                <i className="bi bi-google me-2"></i>Google
-              </button>
-              <button className="btn btn-outline-secondary w-50">
-                <i className="bi bi-facebook me-2"></i>Facebook
-              </button>
-            </div>
+           
             <div className="text-center" style={{ fontSize: 14 }}>
-              Bạn chưa có tài khoản? <Link to="/register">Đăng ký</Link>
+              Chưa có tài khoản? <Link to="/register" className="text-dark"><strong>Tạo tài khoản</strong></Link>
             </div>
             </div>
             

@@ -113,19 +113,7 @@ function RegisterForm() {
     <div className="container-fluid min-vh-100 bg-light">
       <div className="row justify-content-center align-items-center min-vh-100">
        
-        <div className="col-md-6 d-none d-md-block p-0">
-          <img
-            src="https://ik.imagekit.io/tvlk/blog/2024/01/landmark-81-3-841x1024.jpg?tr=q-70,c-at_max,w-500,h-300,dpr-2"
-            alt="building"
-            className="img-fluid"
-            style={{
-              objectFit: "cover",
-              width: "100%",
-              height: "100vh",
-              display: "block",
-            }}
-          />
-        </div>
+       
        
         <div className="col-md-6 bg-white d-flex flex-column justify-content-center align-items-center py-5">
           <div className="w-75" style={{ maxWidth: 400 }}>
@@ -149,10 +137,10 @@ function RegisterForm() {
               </div>
             </div>
             <h5 className="mb-2 fw-bold text-center">
-              Chào mừng đến với Nền Tảng Bất Động Sản!
+              Tạo tài khoản
             </h5>
             <p className="mb-4 text-muted text-center" style={{ fontSize: 15 }}>
-              Hãy tạo tài khoản của bạn để bắt đầu.
+              Chào mừng bạn đến với TodoFlow! Hãy tạo tài khoản để bắt đầu quản lý công việc của mình.
             </p>
             {generalError && (
               <div className="alert alert-danger py-2">{generalError}</div>
@@ -162,7 +150,7 @@ function RegisterForm() {
               )}
             <form onSubmit={onSubmitHandler}> 
                <div className="mb-3">
-                <label className="form-label">Name</label>
+                <label className="form-label"> <strong>Tên của bạn</strong></label>
                 <input
                   className="form-control"
                   id="name"
@@ -174,11 +162,11 @@ function RegisterForm() {
               </div>
               {error.name && (<div className="text-danger mb-3">{error.name}</div>)}
               <div className="mb-3">
-                <label className="form-label">Email</label>
+                <label className="form-label"><strong>Email</strong></label>
                 <input
                   className="form-control"
                   id="email"
-                  placeholder="Nhập email của bạn"
+                  placeholder="nhap.email@example.com"
                   onChange={onChangeHandler}
                   value={formData.email}
                   
@@ -186,7 +174,7 @@ function RegisterForm() {
               </div>
               {error.email && (<div className="text-danger mb-3">{error.email}</div>)}
               <div className="mb-3">
-                <label className="form-label">Mật khẩu</label>
+                <label className="form-label"><strong>Mật Khẩu</strong></label>
                 <input
                   type="password"
                   className="form-control"
@@ -199,7 +187,7 @@ function RegisterForm() {
               </div>
               {error.password && (<div className="text-danger mb-3">{error.password}</div>)}
               <div className="mb-3">
-                <label className="form-label">Xác nhận mật khẩu</label>
+                <label className="form-label"><strong>Xác nhận mật khẩu</strong></label>
                 <input
                   type="password"
                   className="form-control"
@@ -228,28 +216,18 @@ function RegisterForm() {
               </div>
               <button
                 type="submit"
-                className="btn btn-primary w-100 mb-3"
+                className="btn btn-dark w-100 mb-3"
                 style={{ fontWeight: 600 }}
               
               >
-                Đăng Ký
+                Tạo tài khoản
               </button>
 
             </form>
-            <div className="text-center mb-3 text-muted" style={{ fontSize: 14 }}>
-              Hoặc đăng nhập bằng
-            </div>
-            <div className="d-flex gap-2 mb-3">
-              <button className="btn btn-outline-secondary w-50">
-                <i className="bi bi-google me-2"></i>Google
-              </button>
-              <button className="btn btn-outline-secondary w-50">
-                <i className="bi bi-facebook me-2"></i>Facebook
-              </button>
-            </div>
-            
+           
+           
             <div className="text-center" style={{ fontSize: 14 }}>
-              Bạn đã có tài khoản? <Link to="/login">Đăng nhập</Link>
+              Đã có tài khoản? <Link to="/login" className="text-black"><strong>Đăng nhập</strong></Link>
 
             
               
