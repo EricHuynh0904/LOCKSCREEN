@@ -5,6 +5,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth"; 
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useRef } from "react";
+import { Toast as BsToast } from "bootstrap";
+
+
 
 function LoginForm (){
       const [formData, setFormData]  = useState({
@@ -25,6 +30,34 @@ function LoginForm (){
           const [loading, setLoading] = useState(false);
           const [generalError, setGeneralError] = useState("");
             const [serverError, setServerError] = useState("");
+
+
+
+            const location = useLocation();
+  const toastRef = useRef(null);
+  const [toastMsg, setToastMsg] = useState("");
+  const [toastType, setToastType] = useState("success");
+  const [bsToast, setBsToast] = useState(null);
+
+  useEffect(() => {
+    if (toastRef.current && !bsToast) {
+      setBsToast(new BsToast(toastRef.current, { delay: 2000, autohide: true }));
+    }
+  }, [bsToast]);
+
+  // Nhận message từ Register và bật toast
+ useEffect(() => {
+    const t = location.state?.toast;
+    if (t?.msg) {
+      setToastMsg(t.msg);
+      setToastType(t.type || "success");
+      setTimeout(() => bsToast?.show(), 0);
+      // Xóa state để F5/back không hiện lại
+      navigate(".", { replace: true, state: {} });
+    }
+  }, [location.state, bsToast, navigate]);
+
+
           const handleChange = (e) => {
              
               setFormData({
@@ -35,6 +68,12 @@ function LoginForm (){
               setGeneralError("");
           }
       
+          const showToast = (msg, type = "success") => {  
+    setToastMsg(msg);
+    setToastType(type);
+    
+    setTimeout(() => bsToast?.show(), 0);
+  }
           
 
   const handleSubmit = async (e) => {
@@ -45,12 +84,15 @@ function LoginForm (){
     setGeneralError("");
         const newError = {};
   if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    showToast("Đăng nhập thất bại", "danger");
     newError.email = "Email không hợp lệ";
   } else if (formData.email.length == 0) {
+    showToast("Đăng nhập thất bại", "danger");
     newError.email = "Email không được để trống";
     
   }
   if (formData.password.length == 0) {
+    showToast("Đăng nhập thất bại", "danger");
     newError.password = "Mật khẩu không được để trống";
     
   }
@@ -71,15 +113,17 @@ const token = res?.access_token;
 
 if (token) {
   localStorage.setItem("token", String(token));
-    window.location.href = "http://localhost:5174?token=" + token;
+   navigate("/todos");
 } else {
   setGeneralError("Đăng nhập thất bại. Không nhận được token/id.");
 }
 
   } catch (err) {
     if (err?.response?.status === 401) {
+      showToast("Mật khẩu/Email không đúng", "danger");
       setError("Email hoặc mật khẩu không đúng.");
     } else {
+      showToast("Mật khẩu/Email không đúng", "danger");
       setError("Đăng nhập thất bại. Hãy thử lại.");
     }
   } finally {
@@ -100,19 +144,7 @@ if (token) {
         <div className="container-fluid min-vh-100 bg-light">
       <div className="row justify-content-center align-items-center min-vh-100">
        
-        <div className="col-md-6 d-none d-md-block p-0">
-          <img
-            src="https://ik.imagekit.io/tvlk/blog/2024/01/landmark-81-3-841x1024.jpg?tr=q-70,c-at_max,w-500,h-300,dpr-2"
-            alt="building"
-            className="img-fluid"
-            style={{
-              objectFit: "cover",
-              width: "100%",
-              height: "100vh",
-              display: "block",
-            }}
-          />
-        </div>
+        
        
         <div className="col-md-6 bg-white d-flex flex-column justify-content-center align-items-center py-5">
           <div className="w-75" style={{ maxWidth: 400 }}>
@@ -186,6 +218,22 @@ if (token) {
             
           </div>
         </div>
+
+        <div className="toast-container position-fixed top-0 end-0 p-3" style={{ zIndex: 1080 }}>
+        <div
+          ref={toastRef}
+          className={`toast align-items-center text-bg-${toastType} border-0`}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="d-flex">
+            <div className="toast-body">{toastMsg}</div>
+            <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+
       </div>
    
     )

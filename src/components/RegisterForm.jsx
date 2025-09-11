@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import {Link} from 'react-router-dom';
 import { useState } from "react";
 import { useEffect } from "react";
+import { useRef } from "react";
+import { Toast as BsToast } from "bootstrap";
+
 
 
 function RegisterForm() {
@@ -26,6 +29,29 @@ function RegisterForm() {
     const [loading, setLoading] = useState(false);
     const [generalError, setGeneralError] = useState("");
       const [serverError, setServerError] = useState("");
+
+
+
+    const toastRef = useRef(null);
+  const [toastMsg, setToastMsg] = useState("");
+  const [toastType, setToastType] = useState("success"); 
+  const toastInstRef = useRef(null);
+
+
+  useEffect(() => {
+    if (toastRef.current && !toastInstRef.current) {
+      toastInstRef.current = new BsToast(toastRef.current, { delay: 2000, autohide: true });
+    }
+  }, []);
+
+  const showToast = (msg, type = "success") => {
+    setToastMsg(msg);
+    setToastType(type);
+    
+    setTimeout(() => toastInstRef.current?.show(), 0);
+  };
+
+
     const onChangeHandler = (e) => {
        
         setFormData({
@@ -45,21 +71,28 @@ function RegisterForm() {
     setGeneralError("");
         const newError = {};
         if(formData.name.length == 0){
+          showToast("Đăng ký thất bại", "danger");
           newError.name = "Tên không được để trống";
         }
         if(formData.email.length == 0){
+            showToast("Đăng ký thất bại", "danger");
             newError.email = "Email không được để trống";
         }else if(!/\S+@\S+\.\S+/.test(formData.email)){
+            showToast("Đăng ký thất bại", "danger");
             newError.email = "Email không hợp lệ";
         }
         if(formData.password.length == 0){
+            showToast("Đăng ký thất bại", "danger");
             newError.password = "Mật khẩu không được để trống";
         }else if(formData.password.length < 8){
+            showToast("Đăng ký thất bại", "danger");
             newError.password = "Mật khẩu phải có ít nhất 8 ký tự";
         }
         if(formData.confirmPassword.length == 0){
+            showToast("Đăng ký thất bại", "danger");
             newError.confirmPassword = "Xác nhận mật khẩu không được để trống";
         }else if(formData.confirmPassword !== formData.password){
+            showToast("Đăng ký thất bại", "danger");
             newError.confirmPassword = "Xác nhận mật khẩu không khớp";
         }
         
@@ -81,18 +114,27 @@ function RegisterForm() {
   console.log("Response data:", res.data);
 
     if (res && res.id) {
+      
   console.log("Đăng ký thành công:", res);
-  navigate("/todos");
+   navigate("/login", {
+    replace: true,
+    state: { toast: { type: "success", msg: "Đăng ký thành công! Vui lòng đăng nhập." } }
+  });
 } else {
+
   setGeneralError("Đăng ký thất bại, không có id trả về");
+  showToast("Đăng ký thất bại, không có id trả về", "danger");
 }
 
   } catch (err) {
     if (err?.response?.status === 409) {
+      showToast("Email đã tồn tại", "danger");
       setError((prev) => ({ ...prev, email: "Email đã tồn tại" }));
     } else if (err?.response?.data?.error) {
+
       setGeneralError(err.response.data.error);
     } else {
+      showToast("Đăng ký thất bại. Hãy thử lại.", "danger");
       setGeneralError("Đăng ký thất bại. Hãy thử lại.");
     }
   } finally {
@@ -232,6 +274,20 @@ function RegisterForm() {
             
               
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="toast-container position-fixed top-0 end-0 p-3" style={{ zIndex: 1080 }}>
+        <div
+          ref={toastRef}
+          className={`toast align-items-center text-bg-${toastType} border-0`}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="d-flex">
+            <div className="toast-body">{toastMsg}</div>
+            <button type="button" className="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
         </div>
       </div>
